@@ -2,16 +2,17 @@ package se.lexicon.jpa_workshop.entity;
 
 import javax.persistence.*;
 import java.util.Objects;
+
 @Entity
 public class AppUser {
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-@Column(nullable = false,length = 255)
+    @Column(nullable = false, length = 255)
     private String firstName;
-@Column(nullable = false,length = 255)
-     private String LastName;
-@Column(nullable = false,unique = true)
+    @Column(nullable = false, length = 255)
+    private String LastName;
+    @Column(nullable = false, unique = true)
     private String email;
 
     public AppUser() {

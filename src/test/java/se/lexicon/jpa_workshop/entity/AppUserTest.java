@@ -28,9 +28,7 @@ public class AppUserTest {
     @DisplayName("Test 2: test equal method")
     public void test_equals() {
         AppUser expected = new AppUser(1, "Aman", "Adam", "aman.sar@lexicon.se");
-
         AppUser actual = testObject;
-
         Assertions.assertEquals(expected, actual);
     }
 
