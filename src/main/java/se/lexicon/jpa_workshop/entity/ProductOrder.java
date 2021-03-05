@@ -2,18 +2,26 @@ package se.lexicon.jpa_workshop.entity;
 
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-@Repository
+@Entity
 public class ProductOrder {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column (nullable = false)
     private LocalDateTime orderDateTime;
-    @OneToMany(mappedBy = "productOrder")
+
+    @OneToMany(mappedBy = "productOrder",orphanRemoval = true)
     private Collection<OrderItem> orderItems;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     private AppUser customer;
+
+    public ProductOrder() {
+    }
 
     public void removeOrderItem(OrderItem orderItem) {
         orderItem.setProductOrder(null);
@@ -24,6 +32,7 @@ public class ProductOrder {
         return orderItems.stream().map(x -> x.calculatePrice(x.getProduct(),
                 x.getQuantity())).reduce(0.0, Double::sum);
     }
+
 
     public int getId() {
         return id;

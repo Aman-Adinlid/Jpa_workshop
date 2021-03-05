@@ -2,18 +2,26 @@ package se.lexicon.jpa_workshop.entity;
 
 import javax.persistence.*;
 import java.util.Objects;
-
+@Entity
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column (nullable = false , length = 255)
     private int quantity;
-    @Column(nullable = false)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     private Product product;
+
+    @ManyToOne (cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "productOrder_id")
     private ProductOrder productOrder;
 
     public double calculatePrice(Product product, int quantity) {
         return product.getPrice() * quantity;
+    }
+
+    public OrderItem() {
     }
 
     public int getId() {
