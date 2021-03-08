@@ -17,7 +17,7 @@ public class OrderItem {
     @JoinColumn(name = "productOrder_id")
     private ProductOrder productOrder;
 
-    public double calculatePrice(Product product, int quantity) {
+    public double calculatePrice() {
         return product.getPrice() * quantity;
     }
 
@@ -68,4 +68,6 @@ public class OrderItem {
     public int hashCode() {
         return Objects.hash(id, quantity, product, productOrder);
     }
+
+
 }

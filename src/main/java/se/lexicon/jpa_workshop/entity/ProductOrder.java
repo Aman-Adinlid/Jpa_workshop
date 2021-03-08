@@ -1,9 +1,8 @@
 package se.lexicon.jpa_workshop.entity;
 
-import org.springframework.stereotype.Repository;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
@@ -14,7 +13,8 @@ public class ProductOrder {
     @Column (nullable = false)
     private LocalDateTime orderDateTime;
 
-    @OneToMany(mappedBy = "productOrder",orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},mappedBy = "productOrder",orphanRemoval = true)
     private Collection<OrderItem> orderItems;
 
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
@@ -24,13 +24,17 @@ public class ProductOrder {
     }
 
     public void removeOrderItem(OrderItem orderItem) {
-        orderItem.setProductOrder(null);
+        if (orderItems != null) {
+            orderItems = new ArrayList<>();
+        }
+        if (orderItem == null) throw new IllegalArgumentException("orderItem is null");
+
         orderItems.remove(orderItem);
+        orderItem.setProductOrder(null);
     }
 
-    public double calculateTotalPrice(Collection<OrderItem> orderItems) {
-        return orderItems.stream().map(x -> x.calculatePrice(x.getProduct(),
-                x.getQuantity())).reduce(0.0, Double::sum);
+    public double calculateTotalPrice() {
+        return orderItems.stream().mapToDouble(OrderItem::calculatePrice).sum();
     }
 
 
